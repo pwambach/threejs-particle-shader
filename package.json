@@ -1,9 +1,9 @@
 {
-  "name": "solar-system-sound-machine",
-  "version": "0.1.0",
+  "name": "threejs-particle-shader",
+  "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pwambach/solar-system-sound-machine"
+    "url": "https://github.com/pwambach/threejs-particle-shader"
   },
   "author": "Philipp Wambach",
   "devDependencies": {
