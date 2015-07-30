@@ -47,7 +47,7 @@
 	scene.add( light );
 
 
-	var textureSize = 512;
+	var textureSize = 128;
 
 
 	var velTexture = [];
@@ -148,6 +148,7 @@
 		fragmentShader: window.document.getElementById( 'dispFrag' ).textContent,
 		depthWrite: _depthTest,
 		transparent: false,
+		wireframe: false,
 		blending: THREE.NormalBlending
 	} );
 
@@ -158,20 +159,18 @@
 	//velocity plane
 	var geometry = new THREE.PlaneGeometry( textureSize, textureSize );
 	var velPlane = new THREE.Mesh( geometry, velocityShaderMaterial );
-	velPlane.rotation.z = -Math.PI/2;
 	velScene.add( velPlane );
 
 	//position plane
 	var geometry2 = new THREE.PlaneGeometry( textureSize, textureSize );
 	var posPlane = new THREE.Mesh( geometry2, positionShaderMaterial );
-	posPlane.rotation.z = -Math.PI/2;
 	posScene.add( posPlane );
 
 	//debug plane
 	var geometryD = new THREE.PlaneGeometry( textureSize, textureSize );
 	var debugPlane = new THREE.Mesh( geometryD, velocityShaderMaterial );
 	debugPlane.position.z = -700;
-	debugPlane.position.x = 400;
+	debugPlane.position.x = -400;
 	debugPlane.position.y = -400;
 	scene.add(debugPlane);
 
@@ -179,29 +178,29 @@
 	var debugPlane2 = new THREE.Mesh( geometryC, positionShaderMaterial );
 	debugPlane2.position.z = -700;
 	debugPlane2.position.x = 400;
-	debugPlane2.position.y = 400;
+	debugPlane2.position.y = -400;
 	scene.add(debugPlane2);
 
 
 	//display plane
-	// var particles = new THREE.Geometry();
-	// for (var i = 0; i < textureSize * textureSize; i++) {
-	// 	var pos = new THREE.Vector3((i % textureSize)/textureSize, Math.floor(i/textureSize)/textureSize , 0);
-	// 	pos = pos.multiplyScalar(100);
-	// 	particles.vertices.push(pos);
-	// }
-	var particles = new THREE.PlaneGeometry( textureSize, textureSize, 2, 2 );
+	var points = new THREE.Geometry();
+	for (var i = 0; i < textureSize * textureSize; i++) {
+		var pos = new THREE.Vector3((i % textureSize)/textureSize, Math.floor(i/textureSize)/textureSize , 0);
+		points.vertices.push(pos);
+	}
+	var pointCloud = new THREE.PointCloud(points, displayShaderMaterial);
+	// var dispPlane = new THREE.PointCloud(particles, displayShaderMaterial);
 
-	// var geometry3 = new THREE.PlaneGeometry( textureSize, textureSize );
-	var dispPlane = new THREE.Mesh( particles, displayShaderMaterial );
-	dispPlane.position.x = -100;
-	dispPlane.position.y = 100;
-	scene.add( dispPlane );
+	//var particles = new THREE.PlaneGeometry( textureSize, textureSize, 2, 2 );
+	//var dispPlane = new THREE.Mesh( particles, displayShaderMaterial );
+	//dispPlane.position.x = -100;
+	//dispPlane.position.y = 100;
+	scene.add( pointCloud );
 
 
 	var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
 	var cameraHelper = new THREE.CameraHelper(processCamera);
-	//scene.add(cameraHelper);
+	scene.add(cameraHelper);
 
 
 	var buffer = 0;
@@ -222,21 +221,22 @@
 
 		dispUniforms.posTex.value = posTexture[newBuffer];
 
-
 		renderer.render(scene, camera);
 
-		if(frames < 120){
-			window.requestAnimationFrame(render);
+		if(frames < 500){
+			// window.requestAnimationFrame(render);
+			window.setTimeout(function(){
+				render();
+			}, 50);
 			frames++;
 		}
 
 		buffer = newBuffer;
 	}
+
 	$container.append(renderer.domElement);
 
-
 	renderer.render(randScene, processCamera, velTexture[0]);
-  renderer.render(randScene, processCamera, posTexture[0]);
 	render();
 
 })(window);
