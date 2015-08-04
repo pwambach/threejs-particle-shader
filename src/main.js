@@ -39,7 +39,7 @@
 
 	var controls = new THREE.OrbitControls(camera);
 
-	var axisHelper = new THREE.AxisHelper( 50 );
+	var axisHelper = new THREE.AxisHelper( 100 );
 	scene.add( axisHelper );
 
 	//Ambient Light
@@ -111,7 +111,7 @@
 	var velUniforms = {
 		velTex: {type: "t", value: velTexture[0]},
 		posTex: {type: "t", value: posTexture[0]},
-		targetPosition: {type: "v3", value: new THREE.Vector3(0.0,0.0,0.0)}
+		targetPosition: {type: "v3", value: new THREE.Vector3(10.0,10.0,10.0)}
 	};
 
 	var velocityShaderMaterial = new THREE.ShaderMaterial( {
@@ -199,8 +199,8 @@
 
 
 	var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
-	var cameraHelper = new THREE.CameraHelper(processCamera);
-	scene.add(cameraHelper);
+	// var cameraHelper = new THREE.CameraHelper(processCamera);
+	// scene.add(cameraHelper);
 
 
 	var buffer = 0;
@@ -223,13 +223,13 @@
 
 		renderer.render(scene, camera);
 
-		if(frames < 500){
-			// window.requestAnimationFrame(render);
-			window.setTimeout(function(){
-				render();
-			}, 50);
-			frames++;
-		}
+		// if(frames < 500){
+			window.requestAnimationFrame(render);
+			// window.setTimeout(function(){
+			// 	render();
+			// }, 50);
+		// 	frames++;
+		// }
 
 		buffer = newBuffer;
 	}
