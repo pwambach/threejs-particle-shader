@@ -118,17 +118,21 @@
 <!-- Display Shaders -->
 	<script type="x-shader/x-vertex" id="dispVert">
 	uniform sampler2D posTex;
+	varying float dist;
 
 	void main() {
 		vec3 pos = texture2D(posTex, position.xy).rgb;
+		dist = smoothstep(0.0, 100.0, distance(vec3(0.0), pos));
 		gl_PointSize = 1.2;
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 	}
 	</script>
 
 	<script type="x-shader/x-fragment" id="dispFrag">
+	varying float dist;
+
 	void main() {
-		gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
+		gl_FragColor = vec4(1.0-dist, 0.5-dist, dist-0.1, 0.5);
 	}
 	</script>
 <!-- End Display Shaders -->

@@ -6,7 +6,8 @@
 	var $ = window.$;
 
 	var $container = $('#canvasContainer');
-	var backgroundColor = 0x035353;
+	//var backgroundColor = 0x035353;
+	var backgroundColor = 0x000000;
 
 	var _depthTest = false;
 
@@ -33,7 +34,7 @@
 	scene.add(orthoCamera);*/
 
 	var camera = new THREE.PerspectiveCamera( 45, ASPECT, 0.1, 2000 );
-	camera.position.set( 0, 0, 1000 );
+	camera.position.set( -300, 0, 500 );
 	camera.lookAt( new THREE.Vector3(0,0,0) );
 	scene.add(camera);
 
@@ -172,14 +173,14 @@
 	debugPlane.position.z = -700;
 	debugPlane.position.x = -400;
 	debugPlane.position.y = -400;
-	scene.add(debugPlane);
+	//scene.add(debugPlane);
 
 	var geometryC = new THREE.PlaneGeometry( textureSize, textureSize );
 	var debugPlane2 = new THREE.Mesh( geometryC, positionShaderMaterial );
 	debugPlane2.position.z = -700;
 	debugPlane2.position.x = 400;
 	debugPlane2.position.y = -400;
-	scene.add(debugPlane2);
+	//scene.add(debugPlane2);
 
 
 	//display plane
