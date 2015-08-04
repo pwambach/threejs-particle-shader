@@ -39,6 +39,8 @@
 		col.g = rand(vec2(vUv.x, vUv.y + 1.0));
 		col.b = rand(vec2(vUv.x, vUv.y + 2.0));
 		col.r = rand(vec2(vUv.xy));
+
+		col *= 1.1;
 		gl_FragColor = vec4(col, 1.0);
 	}
 	</script>
@@ -72,7 +74,6 @@
 		float distance = max(distance(targetPosition, pos), 1.0);
 		vec3 direction = normalize(targetPosition - pos);
 		velocity = velocity + ((direction / distance) * 0.5);
-		velocity = velocity + vec3(0.001,0.0,0.0);
 		//velocity -= vec3(0.01);
 
 		gl_FragColor = vec4( velocity, 1.0 );
@@ -120,14 +121,14 @@
 
 	void main() {
 		vec3 pos = texture2D(posTex, position.xy).rgb;
-		gl_PointSize = 3.0;
+		gl_PointSize = 1.2;
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 	}
 	</script>
 
 	<script type="x-shader/x-fragment" id="dispFrag">
 	void main() {
-		gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		gl_FragColor = vec4(1.0, 1.0, 1.0, 0.3);
 	}
 	</script>
 <!-- End Display Shaders -->

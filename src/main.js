@@ -6,7 +6,7 @@
 	var $ = window.$;
 
 	var $container = $('#canvasContainer');
-	var backgroundColor = 0x43d3d3;
+	var backgroundColor = 0x035353;
 
 	var _depthTest = false;
 
@@ -47,7 +47,7 @@
 	scene.add( light );
 
 
-	var textureSize = 128;
+	var textureSize = 256;
 
 
 	var velTexture = [];
@@ -111,7 +111,7 @@
 	var velUniforms = {
 		velTex: {type: "t", value: velTexture[0]},
 		posTex: {type: "t", value: posTexture[0]},
-		targetPosition: {type: "v3", value: new THREE.Vector3(10.0,10.0,10.0)}
+		targetPosition: {type: "v3", value: new THREE.Vector3(0.0,20.0,0.0)}
 	};
 
 	var velocityShaderMaterial = new THREE.ShaderMaterial( {
@@ -147,9 +147,9 @@
 		vertexShader: window.document.getElementById( 'dispVert' ).textContent,
 		fragmentShader: window.document.getElementById( 'dispFrag' ).textContent,
 		depthWrite: _depthTest,
-		transparent: false,
+		transparent: true,
 		wireframe: false,
-		blending: THREE.NormalBlending
+		blending: THREE.AdditiveBlending
 	} );
 
 	//rand Plane
