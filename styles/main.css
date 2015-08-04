@@ -3,11 +3,11 @@ body {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	color: #fefefe;
 	font-weight: 200;
-	background-color: #43d3d3;
+	background-color: #000;
 }
 * {
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }
 
 *:focus {
