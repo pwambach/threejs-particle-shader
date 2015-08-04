@@ -40,12 +40,12 @@
 
 	var controls = new THREE.OrbitControls(camera);
 
-	var axisHelper = new THREE.AxisHelper( 100 );
-	scene.add( axisHelper );
+	//var axisHelper = new THREE.AxisHelper( 100 );
+	//scene.add( axisHelper );
 
 	//Ambient Light
-	var light = new THREE.AmbientLight( 0xe0e0e0 ); // soft white light
-	scene.add( light );
+	//var light = new THREE.AmbientLight( 0xe0e0e0 ); // soft white light
+	//scene.add( light );
 
 
 	var textureSize = 256;
