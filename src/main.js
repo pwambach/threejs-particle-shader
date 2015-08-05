@@ -164,32 +164,32 @@
 	} );
 
 	//rand Plane
-	var randPlane = new THREE.Mesh(new THREE.PlaneGeometry(textureSize, textureSize), randMaterial);
+	var randPlane = new THREE.Mesh(new THREE.PlaneBufferGeometry(textureSize, textureSize), randMaterial);
 	randScene.add(randPlane);
 
 	//velocity plane
-	var geometry = new THREE.PlaneGeometry( textureSize, textureSize );
+	var geometry = new THREE.PlaneBufferGeometry( textureSize, textureSize );
 	var velPlane = new THREE.Mesh( geometry, velocityShaderMaterial );
 	velScene.add( velPlane );
 
 	//position plane
-	var geometry2 = new THREE.PlaneGeometry( textureSize, textureSize );
+	var geometry2 = new THREE.PlaneBufferGeometry( textureSize, textureSize );
 	var posPlane = new THREE.Mesh( geometry2, positionShaderMaterial );
 	posScene.add( posPlane );
 
 	//debug plane
-	var geometryD = new THREE.PlaneGeometry( textureSize, textureSize );
-	var debugPlane = new THREE.Mesh( geometryD, velocityShaderMaterial );
-	debugPlane.position.z = -700;
-	debugPlane.position.x = -400;
-	debugPlane.position.y = -400;
+	// var geometryD = new THREE.PlaneBufferGeometry( textureSize, textureSize );
+	// var debugPlane = new THREE.Mesh( geometryD, velocityShaderMaterial );
+	// debugPlane.position.z = -700;
+	// debugPlane.position.x = -400;
+	// debugPlane.position.y = -400;
 	//scene.add(debugPlane);
 
-	var geometryC = new THREE.PlaneGeometry( textureSize, textureSize );
-	var debugPlane2 = new THREE.Mesh( geometryC, positionShaderMaterial );
-	debugPlane2.position.z = -700;
-	debugPlane2.position.x = 400;
-	debugPlane2.position.y = -400;
+	// var geometryC = new THREE.PlaneBufferGeometry( textureSize, textureSize );
+	// var debugPlane2 = new THREE.Mesh( geometryC, positionShaderMaterial );
+	// debugPlane2.position.z = -700;
+	// debugPlane2.position.x = 400;
+	// debugPlane2.position.y = -400;
 	//scene.add(debugPlane2);
 
 
