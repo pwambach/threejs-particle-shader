@@ -26,6 +26,16 @@
 	// Scene
 	var scene = new THREE.Scene();
 
+
+	// Stats
+	var stats = new Stats();
+	stats.setMode(0);
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.left = '0px';
+	stats.domElement.style.top = '0px';
+	document.body.appendChild( stats.domElement );
+
+
 	//Orthographic Camera
 	/*var d = 220;
 	var orthoCamera = new THREE.OrthographicCamera( - d * ASPECT, d * ASPECT, d, - d, 1, 2500 );
@@ -233,6 +243,7 @@
 		// }
 
 		buffer = newBuffer;
+		stats.update();
 	}
 
 	$container.append(renderer.domElement);
