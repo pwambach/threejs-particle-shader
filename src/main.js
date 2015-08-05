@@ -6,7 +6,6 @@
 	var $ = window.$;
 
 	var $container = $('#canvasContainer');
-	//var backgroundColor = 0x035353;
 	var backgroundColor = 0x000000;
 
 	var _depthTest = false;
