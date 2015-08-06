@@ -8,8 +8,6 @@
 	var $container = $('#canvasContainer');
 	var backgroundColor = 0x000000;
 
-	var _depthTest = false;
-
 	// set the scene size
 	var WIDTH = $(window.document).width();
 	var HEIGHT = $(window.document).height();
@@ -27,12 +25,12 @@
 
 
 	// Stats
-	var stats = new Stats();
+	var stats = new window.Stats();
 	stats.setMode(0);
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.left = '0px';
 	stats.domElement.style.top = '0px';
-	document.body.appendChild( stats.domElement );
+	window.document.body.appendChild( stats.domElement );
 
 
 	//Orthographic Camera
@@ -49,205 +47,26 @@
 
 	var controls = new THREE.OrbitControls(camera);
 
-	//var axisHelper = new THREE.AxisHelper( 100 );
-	//scene.add( axisHelper );
-
-	//Ambient Light
-	//var light = new THREE.AmbientLight( 0xe0e0e0 ); // soft white light
-	//scene.add( light );
+	var axisHelper = new THREE.AxisHelper( 100 );
+	scene.add( axisHelper );
 
 
-	var textureSize = 256;
 
 
-	var velTexture = [];
-	velTexture[0] = new THREE.WebGLRenderTarget(
-		textureSize,
-		textureSize, {
-			format: THREE.RGBFormat,
-			generateMipmaps: false,
-			magFilter: THREE.NearestFilter,
-			minFilter: THREE.NearestFilter,
-			type: THREE.FloatType,
-			depthWrite: false,
-		}
-	);
-	velTexture[1] = new THREE.WebGLRenderTarget(
-		textureSize,
-		textureSize, {
-			format: THREE.RGBFormat,
-			generateMipmaps: false,
-			magFilter: THREE.NearestFilter,
-			minFilter: THREE.NearestFilter,
-			type: THREE.FloatType,
-			depthWrite: _depthTest,
-		}
-	);
 
-	var posTexture = [];
-	posTexture[0] = new THREE.WebGLRenderTarget(
-		textureSize,
-		textureSize, {
-			format: THREE.RGBFormat,
-			generateMipmaps: false,
-			magFilter: THREE.NearestFilter,
-			minFilter: THREE.NearestFilter,
-			type: THREE.FloatType,
-			depthWrite: _depthTest,
-		}
-	);
-	posTexture[1] = new THREE.WebGLRenderTarget(
-		textureSize,
-		textureSize, {
-			format: THREE.RGBFormat,
-			generateMipmaps: false,
-			magFilter: THREE.NearestFilter,
-			minFilter: THREE.NearestFilter,
-			type: THREE.FloatType,
-			depthWrite: _depthTest,
-		}
-	);
-
-	//random
-	var randMaterial = new THREE.ShaderMaterial( {
-		vertexShader: window.document.getElementById( 'randVert' ).textContent,
-		fragmentShader: window.document.getElementById( 'randFrag' ).textContent,
-		depthWrite: false
-	});
-	var randScene = new THREE.Scene();
+	var particles = new Particles(renderer, scene, camera);
 
 
-	//velocity
-	var velUniforms = {
-		velTex: {type: "t", value: velTexture[0]},
-		posTex: {type: "t", value: posTexture[0]},
-		targetPosition: {type: "v3", value: new THREE.Vector3(0.0,20.0,0.0)}
-	};
 
-	var velocityShaderMaterial = new THREE.ShaderMaterial( {
-		uniforms: velUniforms,
-		vertexShader: document.getElementById( 'velVert' ).textContent,
-		fragmentShader: document.getElementById( 'velFrag' ).textContent
-	} );
-
-	var velScene = new THREE.Scene();
-
-	//position
-	var posUniforms = {
-		velTex: {type: "t", value: velTexture[0]},
-		posTex: {type: "t", value: posTexture[0]}
-	};
-
-	var positionShaderMaterial = new THREE.ShaderMaterial( {
-		uniforms: posUniforms,
-		vertexShader: window.document.getElementById( 'posVert' ).textContent,
-		fragmentShader: window.document.getElementById( 'posFrag' ).textContent
-	} );
-
-	var posScene = new THREE.Scene();
-
-
-	//display
-	var dispUniforms = {
-		posTex: {type: "t", value: posTexture[0]},
-	};
-
-	var displayShaderMaterial = new THREE.ShaderMaterial( {
-		uniforms: dispUniforms,
-		vertexShader: window.document.getElementById( 'dispVert' ).textContent,
-		fragmentShader: window.document.getElementById( 'dispFrag' ).textContent,
-		depthWrite: _depthTest,
-		transparent: true,
-		wireframe: false,
-		blending: THREE.AdditiveBlending
-	} );
-
-	//rand Plane
-	var randPlane = new THREE.Mesh(new THREE.PlaneBufferGeometry(textureSize, textureSize), randMaterial);
-	randScene.add(randPlane);
-
-	//velocity plane
-	var geometry = new THREE.PlaneBufferGeometry( textureSize, textureSize );
-	var velPlane = new THREE.Mesh( geometry, velocityShaderMaterial );
-	velScene.add( velPlane );
-
-	//position plane
-	var geometry2 = new THREE.PlaneBufferGeometry( textureSize, textureSize );
-	var posPlane = new THREE.Mesh( geometry2, positionShaderMaterial );
-	posScene.add( posPlane );
-
-	//debug plane
-	// var geometryD = new THREE.PlaneBufferGeometry( textureSize, textureSize );
-	// var debugPlane = new THREE.Mesh( geometryD, velocityShaderMaterial );
-	// debugPlane.position.z = -700;
-	// debugPlane.position.x = -400;
-	// debugPlane.position.y = -400;
-	//scene.add(debugPlane);
-
-	// var geometryC = new THREE.PlaneBufferGeometry( textureSize, textureSize );
-	// var debugPlane2 = new THREE.Mesh( geometryC, positionShaderMaterial );
-	// debugPlane2.position.z = -700;
-	// debugPlane2.position.x = 400;
-	// debugPlane2.position.y = -400;
-	//scene.add(debugPlane2);
-
-
-	//display plane
-	var points = new THREE.Geometry();
-	for (var i = 0; i < textureSize * textureSize; i++) {
-		var pos = new THREE.Vector3((i % textureSize)/textureSize, Math.floor(i/textureSize)/textureSize , 0);
-		points.vertices.push(pos);
-	}
-	var pointCloud = new THREE.PointCloud(points, displayShaderMaterial);
-	// var dispPlane = new THREE.PointCloud(particles, displayShaderMaterial);
-
-	//var particles = new THREE.PlaneGeometry( textureSize, textureSize, 2, 2 );
-	//var dispPlane = new THREE.Mesh( particles, displayShaderMaterial );
-	//dispPlane.position.x = -100;
-	//dispPlane.position.y = 100;
-	scene.add( pointCloud );
-
-
-	var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
-	// var cameraHelper = new THREE.CameraHelper(processCamera);
-	// scene.add(cameraHelper);
-
-
-	var buffer = 0;
 	// Render loop
-
-	var frames = 0;
 	function render() {
-
-		var newBuffer = (buffer+1)%2;
-		velUniforms.velTex.value = velTexture[buffer];
-		velUniforms.posTex.value = posTexture[buffer];
-		renderer.render(velScene, processCamera, velTexture[newBuffer]);
-
-		posUniforms.velTex.value = velTexture[newBuffer];
-		posUniforms.posTex.value = posTexture[buffer];
-
-		renderer.render(posScene, processCamera, posTexture[newBuffer]);
-
-		dispUniforms.posTex.value = posTexture[newBuffer];
-
-		renderer.render(scene, camera);
-
-		// if(frames < 500){
-			window.requestAnimationFrame(render);
-			// window.setTimeout(function(){
-			// 	render();
-			// }, 50);
-		// 	frames++;
-		// }
-
-		buffer = newBuffer;
+		particles.update();
 		stats.update();
+		renderer.render(scene, camera);
+		window.requestAnimationFrame(render);
 	}
 
 	$container.append(renderer.domElement);
-
-	renderer.render(randScene, processCamera, velTexture[0]);
 	render();
 
 })(window);
