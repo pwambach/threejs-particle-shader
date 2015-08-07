@@ -18,7 +18,7 @@
 
     options = options || {
       textureSize: 256,
-      targetPosition: new THREE.Vector3(10.0, 0.0, 0.0)
+      targetPosition: new THREE.Vector3(0.0, 10.0, 0.0)
     };
 
     var textureSize = options.textureSize;
