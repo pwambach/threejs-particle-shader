@@ -116,7 +116,8 @@
     displayMaterialOptions = displayMaterialOptions || {
       transparent: true,
       wireframe: false,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     };
 
     return {
