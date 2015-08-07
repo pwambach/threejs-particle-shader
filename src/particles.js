@@ -18,7 +18,7 @@
 
     options = options || {
       textureSize: 256,
-      targetPosition: new THREE.Vector3(0.0, 10.0, 0.0)
+      targetPosition: new THREE.Vector3(0.0, 20.0, 0.0)
     };
 
     var textureSize = options.textureSize;
@@ -57,8 +57,8 @@
 
     var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
 
+    //start with random values
     renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
-    renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
     return {
       update: function(){
@@ -116,7 +116,7 @@
     displayMaterialOptions = displayMaterialOptions || {
       transparent: true,
       wireframe: false,
-      blending: THREE.NormalBlending
+      blending: THREE.AdditiveBlending
     };
 
     return {
