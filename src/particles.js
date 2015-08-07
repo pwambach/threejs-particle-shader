@@ -46,18 +46,17 @@
       random: new THREE.Scene()
     };
 
-    var v = createMesh(textureSize, shaderMaterials.velocity);
-    var p = createMesh(textureSize, shaderMaterials.position);
-    scenes.velocity.add(v);
-    scenes.position.add(p);
-    scenes.display.add(v);
-    //scenes.display.add(p);
+    scenes.velocity.add(createMesh(textureSize, shaderMaterials.velocity));
+    scenes.position.add(createMesh(textureSize, shaderMaterials.position));
     scenes.display.add(createPointCloud(textureSize, shaderMaterials.display));
     scenes.random.add(createMesh(textureSize, shaderMaterials.random));
 
+    //debug
+    //scenes.display.add(createMesh(textureSize, shaderMaterials.velocity));
+    //scenes.display.add(createMesh(textureSize, shaderMaterials.position));
+
     var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
 
-    var buffer = 0;
     renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
     renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
@@ -117,14 +116,14 @@
     displayMaterialOptions = displayMaterialOptions || {
       transparent: true,
       wireframe: false,
-      blending: THREE.AdditiveBlending
+      blending: THREE.NormalBlending
     };
 
     return {
       velocity: createShaderMaterial(shaders.velocityVertex, shaders.velocityFragment, uniforms.velocity),
       position: createShaderMaterial(shaders.positionVertex, shaders.positionFragment, uniforms.position),
       display: createShaderMaterial(shaders.displayVertex, shaders.displayFragment, uniforms.display, displayMaterialOptions),
-      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment)
+      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, null)
     };
   };
 
@@ -135,7 +134,7 @@
       vertexShader: vShader,
       fragmentShader: fShader
     };
-    _extend(defaults, options);
+    window.$.extend(defaults, options);
     return new THREE.ShaderMaterial(defaults);
   };
 
@@ -149,7 +148,7 @@
   var createPointCloud = function(size, material) {
     var points = new THREE.Geometry();
     for (var i = 0; i < size * size; i++) {
-      var pos = new THREE.Vector3(0.0,0.0,0.0);
+      var pos = new THREE.Vector3((i % size)/size, Math.floor(i/size)/size , 0);
       points.vertices.push(pos);
     }
     return new THREE.PointCloud(points, material);
