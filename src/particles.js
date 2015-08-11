@@ -14,7 +14,7 @@
     return a;
   }
 
-  var Particles = function(renderer, scene, camera, options){
+  var Particles = function(renderer, scene, options){
 
     options = options || {
       textureSize: 256,
@@ -62,7 +62,7 @@
 
     return {
       update: function(){
-        update(renderer, scenes, processCamera, camera, renderTargets, uniforms);
+        update(renderer, scenes, processCamera, renderTargets, uniforms);
       }
     };
   };
@@ -155,7 +155,7 @@
     return new THREE.PointCloud(points, material);
   };
 
-  var update = function(renderer, scenes, processCamera, camera, renderTargets, uniforms){
+  var update = function(renderer, scenes, processCamera, renderTargets, uniforms){
     var newBuffer = (buffer+1)%2;
     uniforms.velocity.velTex.value = renderTargets.velocity[buffer];
     uniforms.position.posTex.value = renderTargets.position[buffer];
