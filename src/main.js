@@ -52,11 +52,30 @@
 
 
 
+	var pos = new THREE.Vector3(50.0,20.0,10.0);
+
+	var sphereMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+	var sphereGeometry = new THREE.SphereGeometry(4, 10, 10);
+	var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	sphere.position.set(pos.x, pos.y, pos.z);
+	scene.add(sphere);
 
 
-	var particles = new Particles(renderer, scene, camera);
+	// setTimeout(function(){
+	// 	pos.x = 100.0;
+	// 	pos.y = 50.0;
+	// 	pos.z = 10.0;
+	// 	sphere.position.set(pos.x, pos.y, pos.z);
+	// }, 5000);
 
+	var particleOptions = {
+		textureSize: 256,
+		targetPosition: pos,
+		pointSize: 1.2,
+		gravityFactor: 0.5
+	};
 
+	var particles = new Particles(renderer, scene, particleOptions);
 
 	// Render loop
 	function render() {

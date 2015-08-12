@@ -17,8 +17,10 @@
   var Particles = function(renderer, scene, options){
 
     options = options || {
+      pointSize: 1.0,
+      gravityFactor: 1.0,
       textureSize: 256,
-      targetPosition: new THREE.Vector3(0.0, 20.0, 0.0)
+      targetPosition: new THREE.Vector3(0.0, 0.0, 0.0)
     };
 
     var textureSize = options.textureSize;
@@ -36,7 +38,7 @@
       randomFragment: window.document.getElementById( 'randFrag' ).textContent
     };
 
-    var uniforms = createUniforms(renderTargets, options.targetPosition);
+    var uniforms = createUniforms(renderTargets, options.targetPosition, options.pointSize, options.gravityFactor);
     var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
 
     var scenes = {
@@ -59,6 +61,7 @@
 
     //start with random values
     renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
+    //renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
     return {
       update: function(){
@@ -68,6 +71,10 @@
   };
 
   window.Particles = Particles;
+
+
+
+
 
 
   var createRenderTargets = function(size, options){
@@ -94,19 +101,22 @@
     return new THREE.WebGLRenderTarget(size, size, options);
   };
 
-  var createUniforms = function(renderTargets, targetPosition){
+  var createUniforms = function(renderTargets, targetPosition, pointSize, gravityFactor){
     return {
       velocity: {
         velTex: {type: "t", value: renderTargets.velocity[0]},
         posTex: {type: "t", value: renderTargets.position[0]},
-        targetPosition: {type: "v3", value: targetPosition}
+        targetPosition: {type: "v3", value: targetPosition},
+        gravityFactor: {type: "f", value: gravityFactor}
       },
       position: {
         velTex: {type: "t", value: renderTargets.velocity[0]},
         posTex: {type: "t", value: renderTargets.position[0]}
       },
       display: {
-        posTex: {type: "t", value: renderTargets.position[0]}
+        pointSize: {type: "f", value: pointSize},
+        posTex: {type: "t", value: renderTargets.position[0]},
+        targetPosition: {type: "v3", value: targetPosition}
       }
     };
   };
