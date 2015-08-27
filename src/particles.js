@@ -28,7 +28,7 @@
     var renderTargets = createRenderTargets(textureSize);
 
     var shaderTextContents = {
-      velocityVertex: window.document.getElementById( 'velVert' ).textContent,
+      velocityVertex: require('raw!./shaders/velocity.vert'),
       velocityFragment: window.document.getElementById( 'velFrag' ).textContent,
       positionVertex: window.document.getElementById( 'posVert' ).textContent,
       positionFragment: window.document.getElementById( 'posFrag' ).textContent,
@@ -37,6 +37,14 @@
       randomVertex: window.document.getElementById( 'randVert' ).textContent,
       randomFragment: window.document.getElementById( 'randFrag' ).textContent
     };
+
+    if(options.velocityFunctionString){
+      shaderTextContents.velocityFragment = replaceBehaviour(shaderTextContents.velocityFragment, options.velocityFunctionString);
+    }
+
+    if(options.colorFunctionString){
+      shaderTextContents.displayFragment = replaceBehaviour(shaderTextContents.displayFragment, options.colorFunctionString);
+    }
 
     var uniforms = createUniforms(renderTargets, options.targetPosition, options.pointSize, options.gravityFactor);
     var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
@@ -74,6 +82,14 @@
 
 
 
+
+  var replaceBehaviour = function(shader, snippet){
+    console.log('old: ', shader);
+    var regex = /\/\*replace\*\/[^]*\/\*replace\*\//g;
+    var newShader = shader.replace(regex, snippet);
+    console.log('new: ', newShader);
+    return newShader;
+  };
 
 
 
@@ -116,7 +132,8 @@
       display: {
         pointSize: {type: "f", value: pointSize},
         posTex: {type: "t", value: renderTargets.position[0]},
-        targetPosition: {type: "v3", value: targetPosition}
+        targetPosition: {type: "v3", value: targetPosition},
+        alpha: {type: "f", value: 0.5}
       }
     };
   };
