@@ -4,6 +4,7 @@
 
 	var THREE = window.THREE;
 	var $ = window.$;
+	var raycaster = new THREE.Raycaster();
 
 	var $container = $('#canvasContainer');
 	var backgroundColor = 0x000000;
@@ -41,7 +42,7 @@
 	scene.add(orthoCamera);*/
 
 	var camera = new THREE.PerspectiveCamera( 45, ASPECT, 0.1, 2000 );
-	camera.position.set( -300, 0, 500 );
+	camera.position.set( -150, 0, 250 );
 	camera.lookAt( new THREE.Vector3(0,0,0) );
 	scene.add(camera);
 
@@ -61,18 +62,20 @@
 	scene.add(sphere);
 
 
-	// setTimeout(function(){
-	// 	pos.x = 100.0;
-	// 	pos.y = 50.0;
-	// 	pos.z = 10.0;
-	// 	sphere.position.set(pos.x, pos.y, pos.z);
-	// }, 5000);
+	var planeGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+	var planeMaterial = new THREE.MeshBasicMaterial({color: 0xff00ff, wireframe: true});
+	var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+	plane.rotation.x = Math.PI/-2;
+	scene.add(plane);
+
 
 	var particleOptions = {
 		textureSize: 256,
 		targetPosition: pos,
 		pointSize: 1.2,
-		gravityFactor: 0.5
+		gravityFactor: 0.5,
+		//velocityFunctionString: 'outVelocity = inVelocity + vec3(0.01);', // function input: veloctiy, pos, targetPosition, distance, direction, gravityFactor
+		//colorFunctionString: 'color = vec4(dist, dist, dist, 1.0);' // function input: dist, alpha
 	};
 
 	var particles = new Particles(renderer, scene, particleOptions);
@@ -87,5 +90,23 @@
 
 	$container.append(renderer.domElement);
 	render();
+
+	var setTargtePosition = function(event) {
+		var x = event.clientX || event.originalEvent.targetTouches[0].clientX;
+		var y = event.clientY || event.originalEvent.targetTouches[0].clientY;
+		var mouse = new THREE.Vector2();
+		mouse.x = (x / window.innerWidth) * 2 - 1;
+		mouse.y = -(y / window.innerHeight) * 2 + 1;
+		raycaster.setFromCamera(mouse, camera);
+		var intersects = raycaster.intersectObject(plane);
+		if(intersects.length){
+			var point = intersects[0].point;
+			console.log(point);
+			sphere.position.set(point.x, point.y, point.z);
+			pos.set(point.x, point.y, point.z);
+		}
+	};
+
+	window.$('body').on('click', setTargtePosition);
 
 })(window);
