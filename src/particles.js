@@ -28,15 +28,17 @@
     var renderTargets = createRenderTargets(textureSize);
 
     var shaderTextContents = {
-      velocityVertex: require('raw!./shaders/velocity.vert'),
-      velocityFragment: window.document.getElementById( 'velFrag' ).textContent,
-      positionVertex: window.document.getElementById( 'posVert' ).textContent,
-      positionFragment: window.document.getElementById( 'posFrag' ).textContent,
-      displayVertex: window.document.getElementById( 'dispVert' ).textContent,
-      displayFragment: window.document.getElementById( 'dispFrag' ).textContent,
-      randomVertex: window.document.getElementById( 'randVert' ).textContent,
-      randomFragment: window.document.getElementById( 'randFrag' ).textContent
+      velocityVertex: require('raw!./shaders/velocity.vert.glsl'),
+      velocityFragment: require('raw!./shaders/velocity.frag.glsl'),
+      positionVertex: require('raw!./shaders/position.vert.glsl'),
+      positionFragment: require('raw!./shaders/position.frag.glsl'),
+      displayVertex: require('raw!./shaders/display.vert.glsl'),
+      displayFragment: require('raw!./shaders/display.frag.glsl'),
+      randomVertex: require('raw!./shaders/random.vert.glsl'),
+      randomFragment: require('raw!./shaders/random.frag.glsl')
     };
+
+
 
     if(options.velocityFunctionString){
       shaderTextContents.velocityFragment = replaceBehaviour(shaderTextContents.velocityFragment, options.velocityFunctionString);

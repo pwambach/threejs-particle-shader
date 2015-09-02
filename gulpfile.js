@@ -1,23 +1,35 @@
 'use strict';
 
 var gulp = require('gulp'),
-useref = require('gulp-useref'),
 deploy = require('gulp-gh-pages'),
-copy = require('gulp-copy');
+watch = require('gulp-watch'),
+webpack = require('webpack'),
+webpackConf = require('./webpack.config.js');
 
-gulp.task('default', function () {
-  var assets = useref.assets();
-
-  return gulp.src('index.html')
-  .pipe(assets)
-  .pipe(assets.restore())
-  .pipe(useref())
-  .pipe(gulp.dest('dist'));
-
+gulp.task("webpack", function(callback) {
+  webpack(webpackConf, function(err, stats) {
+    if(err) throw new gutil.PluginError("webpack", err);
+    callback();
+  });
 });
 
+gulp.task('watch', function(){
+  gulp.watch('src/**/*', ['webpack']);
+  gulp.watch('dist/**/*', ['copy']);
+});
 
-gulp.task('deploy', ['default'], function () {
-  return gulp.src('./dist/**/*')
+gulp.task("copy", function(){
+  gulp.src("dist/**/*")
+    .pipe(gulp.dest('example/js'))
+  gulp.src([
+      "node_modules/three/three.min.js",
+      "node_modules/jquery/dist/jquery.min.js",
+      "node_modules/stats.js/build/stats.min.js"
+    ])
+    .pipe(gulp.dest('example/js/vendor'));
+});
+
+gulp.task('deploy', ['webpack'], function () {
+  return gulp.src('example/**/*')
   .pipe(deploy({push: true}));
 });
