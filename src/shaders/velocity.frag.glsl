@@ -1,16 +1,22 @@
 varying vec2 vUv;
 uniform sampler2D velTex;
 uniform sampler2D posTex;
+uniform sampler2D targetTex;
 uniform vec3 targetPosition;
 uniform float gravityFactor;
+uniform int useTargetTexture;
 
 void main() {
   vec3 inVelocity = texture2D(velTex, vUv).rgb;
   vec3 inPosition = texture2D(posTex, vUv).rgb;
+  vec3 targetPos = targetPosition;
   vec3 outVelocity;
+  if(useTargetTexture == 1) {
+    targetPos = texture2D(targetTex, vUv).rgb;
+  }
 
-  float distance = distance(targetPosition, inPosition);
-  vec3 direction = normalize(targetPosition - inPosition);
+  float distance = distance(targetPos, inPosition);
+  vec3 direction = normalize(targetPos - inPosition);
 
   /*replace*/
   distance = max(distance, 1.0);
