@@ -69,8 +69,9 @@
 
     scenes.velocity.add(createMesh(textureSize, shaderMaterials.velocity));
     scenes.position.add(createMesh(textureSize, shaderMaterials.position));
-    scenes.display.add(createPointCloud(textureSize, shaderMaterials.display));
     scenes.random.add(createMesh(textureSize, shaderMaterials.random));
+    this.pointCloud = createPointCloud(textureSize, shaderMaterials.display);
+    scenes.display.add(this.pointCloud);
 
     //debug
     //scenes.display.add(createMesh(textureSize, shaderMaterials.velocity));
