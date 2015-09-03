@@ -90,11 +90,20 @@
 	      shaderTextContents.velocityFragment = replaceBehaviour(shaderTextContents.velocityFragment, options.velocityFunctionString);
 	    }
 
+	    if(options.positionFunctionString){
+	      shaderTextContents.positionFragment = replaceBehaviour(shaderTextContents.positionFragment, options.positionFunctionString);
+	    }
+
 	    if(options.colorFunctionString){
 	      shaderTextContents.displayFragment = replaceBehaviour(shaderTextContents.displayFragment, options.colorFunctionString);
 	    }
 
-	    var uniforms = createUniforms(renderTargets, options.targetPosition, options.pointSize, options.gravityFactor);
+	    var uniforms = {
+	      velocity: createVelocityUniforms(renderTargets, options.targetPosition, options.targetTexture, options.gravityFactor),
+	      position: createPositionUniforms(renderTargets),
+	      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize)
+	    };
+
 	    var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
 
 	    var scenes = {
@@ -106,8 +115,9 @@
 
 	    scenes.velocity.add(createMesh(textureSize, shaderMaterials.velocity));
 	    scenes.position.add(createMesh(textureSize, shaderMaterials.position));
-	    scenes.display.add(createPointCloud(textureSize, shaderMaterials.display));
 	    scenes.random.add(createMesh(textureSize, shaderMaterials.random));
+	    this.pointCloud = createPointCloud(textureSize, shaderMaterials.display);
+	    scenes.display.add(this.pointCloud);
 
 	    //debug
 	    //scenes.display.add(createMesh(textureSize, shaderMaterials.velocity));
@@ -117,12 +127,13 @@
 
 	    //start with random values
 	    renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
-	    //renderer.render(scenes.random, processCamera, renderTargets.position[0]);
+	    renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
 	    return {
 	      update: function(){
 	        update(renderer, scenes, processCamera, renderTargets, uniforms);
-	      }
+	      },
+	      pointCloud: this.pointCloud
 	    };
 	  };
 
@@ -163,24 +174,30 @@
 	    return new THREE.WebGLRenderTarget(size, size, options);
 	  };
 
-	  var createUniforms = function(renderTargets, targetPosition, pointSize, gravityFactor){
+	  var createVelocityUniforms = function(renderTargets, targetPosition, targetTexture, gravityFactor){
 	    return {
-	      velocity: {
-	        velTex: {type: "t", value: renderTargets.velocity[0]},
-	        posTex: {type: "t", value: renderTargets.position[0]},
-	        targetPosition: {type: "v3", value: targetPosition},
-	        gravityFactor: {type: "f", value: gravityFactor}
-	      },
-	      position: {
-	        velTex: {type: "t", value: renderTargets.velocity[0]},
-	        posTex: {type: "t", value: renderTargets.position[0]}
-	      },
-	      display: {
-	        pointSize: {type: "f", value: pointSize},
-	        posTex: {type: "t", value: renderTargets.position[0]},
-	        targetPosition: {type: "v3", value: targetPosition},
-	        alpha: {type: "f", value: 0.5}
-	      }
+	      velTex: {type: "t", value: renderTargets.velocity[0]},
+	      posTex: {type: "t", value: renderTargets.position[0]},
+	      targetTex: {type: "t", value: targetTexture},
+	      targetPosition: {type: "v3", value: targetPosition},
+	      useTargetTexture: {type: "i", value: !!targetTexture ? 1 : 0},
+	      gravityFactor: {type: "f", value: gravityFactor}
+	    };
+	  };
+
+	  var createPositionUniforms = function(renderTargets){
+	    return {
+	      velTex: {type: "t", value: renderTargets.velocity[0]},
+	      posTex: {type: "t", value: renderTargets.position[0]}
+	    };
+	  };
+
+	  var createDisplayUniforms = function(renderTargets, targetPosition, pointSize){
+	    return {
+	      pointSize: {type: "f", value: pointSize},
+	      posTex: {type: "t", value: renderTargets.position[0]},
+	      targetPosition: {type: "v3", value: targetPosition},
+	      alpha: {type: "f", value: 0.5}
 	    };
 	  };
 
@@ -189,7 +206,7 @@
 	    displayMaterialOptions = displayMaterialOptions || {
 	      transparent: true,
 	      wireframe: false,
-	      blending: THREE.AdditiveBlending,
+	      blending: THREE.NormalBlending,
 	      depthWrite: false
 	    };
 
@@ -243,6 +260,7 @@
 	    buffer = newBuffer;
 	  };
 
+
 	})(window);
 
 
@@ -256,7 +274,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 outVelocity;\n\n  float distance = distance(targetPosition, inPosition);\n  vec3 direction = normalize(targetPosition - inPosition);\n\n  /*replace*/\n  distance = max(distance, 1.0);\n  outVelocity = inVelocity + ((direction / distance) * gravityFactor);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
+	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform sampler2D targetTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\nuniform int useTargetTexture;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 targetPos = targetPosition;\n  vec3 outVelocity;\n  if(useTargetTexture == 1) {\n    targetPos = texture2D(targetTex, vUv).rgb;\n  }\n\n  float distance = distance(targetPos, inPosition);\n  vec3 direction = normalize(targetPos - inPosition);\n\n  /*replace*/\n  distance = max(distance, 1.0);\n  outVelocity = inVelocity + ((direction / distance) * gravityFactor);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
 
 /***/ },
 /* 3 */
@@ -268,7 +286,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\n\nvoid main() {\n  vec3 velocity = texture2D(velTex, vUv).rgb;\n  vec3 pos = texture2D(posTex, vUv).rgb;\n  pos += velocity;\n  gl_FragColor = vec4( pos, 1.0 );\n}\n"
+	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\n\nvoid main() {\n  vec3 velocity = texture2D(velTex, vUv).rgb;\n  vec3 pos = texture2D(posTex, vUv).rgb;\n\n  /*replace*/\n  pos += velocity;\n  /*replace*/\n  \n  gl_FragColor = vec4( pos, 1.0 );\n}\n"
 
 /***/ },
 /* 5 */
