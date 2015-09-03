@@ -52,7 +52,12 @@
       shaderTextContents.displayFragment = replaceBehaviour(shaderTextContents.displayFragment, options.colorFunctionString);
     }
 
-    var uniforms = createUniforms(renderTargets, options.targetPosition, options.pointSize, options.gravityFactor);
+    var uniforms = {
+      velocity: createVelocityUniforms(renderTargets, options.targetPosition, options.targetTexture, options.gravityFactor),
+      position: createPositionUniforms(renderTargets),
+      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize)
+    };
+
     var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
 
     var scenes = {
@@ -121,24 +126,30 @@
     return new THREE.WebGLRenderTarget(size, size, options);
   };
 
-  var createUniforms = function(renderTargets, targetPosition, pointSize, gravityFactor){
+  var createVelocityUniforms = function(renderTargets, targetPosition, targetTexture, gravityFactor){
     return {
-      velocity: {
-        velTex: {type: "t", value: renderTargets.velocity[0]},
-        posTex: {type: "t", value: renderTargets.position[0]},
-        targetPosition: {type: "v3", value: targetPosition},
-        gravityFactor: {type: "f", value: gravityFactor}
-      },
-      position: {
-        velTex: {type: "t", value: renderTargets.velocity[0]},
-        posTex: {type: "t", value: renderTargets.position[0]}
-      },
-      display: {
-        pointSize: {type: "f", value: pointSize},
-        posTex: {type: "t", value: renderTargets.position[0]},
-        targetPosition: {type: "v3", value: targetPosition},
-        alpha: {type: "f", value: 0.5}
-      }
+      velTex: {type: "t", value: renderTargets.velocity[0]},
+      posTex: {type: "t", value: renderTargets.position[0]},
+      targetTex: {type: "t", value: targetTexture},
+      targetPosition: {type: "v3", value: targetPosition},
+      useTargetTexture: {type: "i", value: !!targetTexture ? 1 : 0},
+      gravityFactor: {type: "f", value: gravityFactor}
+    };
+  };
+
+  var createPositionUniforms = function(renderTargets){
+    return {
+      velTex: {type: "t", value: renderTargets.velocity[0]},
+      posTex: {type: "t", value: renderTargets.position[0]}
+    };
+  };
+
+  var createDisplayUniforms = function(renderTargets, targetPosition, pointSize){
+    return {
+      pointSize: {type: "f", value: pointSize},
+      posTex: {type: "t", value: renderTargets.position[0]},
+      targetPosition: {type: "v3", value: targetPosition},
+      alpha: {type: "f", value: 0.5}
     };
   };
 
