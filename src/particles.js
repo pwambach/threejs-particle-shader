@@ -80,12 +80,13 @@
 
     //start with random values
     renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
-    //renderer.render(scenes.random, processCamera, renderTargets.position[0]);
+    renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
     return {
       update: function(){
         update(renderer, scenes, processCamera, renderTargets, uniforms);
-      }
+      },
+      pointCloud: this.pointCloud
     };
   };
 
