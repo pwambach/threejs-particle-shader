@@ -132,10 +132,8 @@
 
 
 	  var replaceBehaviour = function(shader, snippet){
-	    console.log('old: ', shader);
 	    var regex = /\/\*replace\*\/[^]*\/\*replace\*\//g;
 	    var newShader = shader.replace(regex, snippet);
-	    console.log('new: ', newShader);
 	    return newShader;
 	  };
 
