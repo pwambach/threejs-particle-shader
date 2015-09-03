@@ -147,7 +147,7 @@
     displayMaterialOptions = displayMaterialOptions || {
       transparent: true,
       wireframe: false,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       depthWrite: false
     };
 
@@ -200,5 +200,6 @@
 
     buffer = newBuffer;
   };
+
 
 })(window);
