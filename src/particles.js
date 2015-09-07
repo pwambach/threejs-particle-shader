@@ -7,21 +7,21 @@
   function _extend (target, source) {
     var a = Object.create(target);
     Object.keys(source).map(function (prop) {
-      if(prop in a){
-        a[prop] = source[prop];
-      }
+      a[prop] = source[prop];
     });
     return a;
   }
 
   var Particles = function(renderer, scene, options){
 
-    options = options || {
+    var defaults = {
       pointSize: 1.0,
       gravityFactor: 1.0,
       textureSize: 256,
+      explodeRate: 1.0,
       targetPosition: new THREE.Vector3(0.0, 0.0, 0.0)
-    };
+    }
+    options = _extend(defaults, options);
 
     var textureSize = options.textureSize;
 
@@ -53,7 +53,8 @@
     var uniforms = {
       velocity: createVelocityUniforms(renderTargets, options.targetPosition, options.targetTexture, options.gravityFactor),
       position: createPositionUniforms(renderTargets),
-      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize)
+      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize),
+      random: createRandomUniforms(options.explodeRate),
     };
 
     var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
@@ -148,6 +149,12 @@
     };
   };
 
+  var createRandomUniforms = function(explodeRate){
+    return {
+      explodeRate: {type: "f", value: explodeRate}
+    };
+  };
+
   var createShaderMaterials = function(shaders, uniforms, displayMaterialOptions){
 
     displayMaterialOptions = displayMaterialOptions || {
@@ -161,7 +168,7 @@
       velocity: createShaderMaterial(shaders.velocityVertex, shaders.velocityFragment, uniforms.velocity),
       position: createShaderMaterial(shaders.positionVertex, shaders.positionFragment, uniforms.position),
       display: createShaderMaterial(shaders.displayVertex, shaders.displayFragment, uniforms.display, displayMaterialOptions),
-      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, null)
+      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, uniforms.random)
     };
   };
 

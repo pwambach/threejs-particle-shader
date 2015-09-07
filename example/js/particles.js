@@ -53,21 +53,21 @@
 	  function _extend (target, source) {
 	    var a = Object.create(target);
 	    Object.keys(source).map(function (prop) {
-	      if(prop in a){
-	        a[prop] = source[prop];
-	      }
+	      a[prop] = source[prop];
 	    });
 	    return a;
 	  }
 
 	  var Particles = function(renderer, scene, options){
 
-	    options = options || {
+	    var defaults = {
 	      pointSize: 1.0,
 	      gravityFactor: 1.0,
 	      textureSize: 256,
+	      explodeRate: 1.0,
 	      targetPosition: new THREE.Vector3(0.0, 0.0, 0.0)
-	    };
+	    }
+	    options = _extend(defaults, options);
 
 	    var textureSize = options.textureSize;
 
@@ -99,7 +99,8 @@
 	    var uniforms = {
 	      velocity: createVelocityUniforms(renderTargets, options.targetPosition, options.targetTexture, options.gravityFactor),
 	      position: createPositionUniforms(renderTargets),
-	      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize)
+	      display: createDisplayUniforms(renderTargets, options.targetPosition, options.pointSize),
+	      random: createRandomUniforms(options.explodeRate),
 	    };
 
 	    var shaderMaterials  = createShaderMaterials(shaderTextContents, uniforms);
@@ -194,6 +195,12 @@
 	    };
 	  };
 
+	  var createRandomUniforms = function(explodeRate){
+	    return {
+	      explodeRate: {type: "f", value: explodeRate}
+	    };
+	  };
+
 	  var createShaderMaterials = function(shaders, uniforms, displayMaterialOptions){
 
 	    displayMaterialOptions = displayMaterialOptions || {
@@ -207,7 +214,7 @@
 	      velocity: createShaderMaterial(shaders.velocityVertex, shaders.velocityFragment, uniforms.velocity),
 	      position: createShaderMaterial(shaders.positionVertex, shaders.positionFragment, uniforms.position),
 	      display: createShaderMaterial(shaders.displayVertex, shaders.displayFragment, uniforms.display, displayMaterialOptions),
-	      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, null)
+	      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, uniforms.random)
 	    };
 	  };
 
@@ -269,7 +276,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform sampler2D targetTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\nuniform int useTargetTexture;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 targetPos = targetPosition;\n  vec3 outVelocity;\n  if(useTargetTexture == 1) {\n    targetPos = texture2D(targetTex, vUv).rgb;\n  }\n\n  float dist = distance(targetPos, inPosition);\n  vec3 direction = normalize(targetPos - inPosition);\n\n  /*replace*/\n  distance = max(distance, 1.0);\n  outVelocity = inVelocity + ((direction / dist) * gravityFactor);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
+	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform sampler2D targetTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\nuniform int useTargetTexture;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 targetPos = targetPosition;\n  vec3 outVelocity;\n  if(useTargetTexture == 1) {\n    targetPos = texture2D(targetTex, vUv).rgb;\n  }\n\n  float dist = distance(targetPos, inPosition);\n  vec3 direction = normalize(targetPos - inPosition);\n\n  /*replace*/\n  dist = max(dist, 1.0);\n  outVelocity = inVelocity + ((direction / dist) * gravityFactor * 0.01);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
 
 /***/ },
 /* 3 */
@@ -293,7 +300,7 @@
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = "varying float dist;\nuniform float alpha;\n\nvoid main() {\n  vec4 color;\n  /*replace*/\n  float iDistance = smoothstep(0.0, 100.0, dist);\n  color = vec4(1.0-iDistance, 0.5-iDistance, iDistance-0.1, alpha);\n  /*replace*/\n  gl_FragColor = color;\n}\n"
+	module.exports = "varying float dist;\nuniform float alpha;\n\nvoid main() {\n  vec4 color;\n  /*replace*/\n  color = vec4(0.0, 1.0, 0.0, alpha);\n  /*replace*/\n  gl_FragColor = color;\n}\n"
 
 /***/ },
 /* 7 */
@@ -305,7 +312,7 @@
 /* 8 */
 /***/ function(module, exports) {
 
-	module.exports = "varying vec2 vUv;\n\n\nfloat rand(vec2 co){\n  return fract(sin(dot(co.xy, vec2(12.8273, 67.245))) * 53726.17623);\n}\n\nvoid main() {\n  vec3 col;\n  col.g = rand(vec2(vUv.x, vUv.y + 1.0));\n  col.b = rand(vec2(vUv.x, vUv.y + 2.0));\n  col.r = rand(vec2(vUv.xy));\n  col = col - 0.5;\n\n  gl_FragColor = vec4(col, 1.0);\n}\n"
+	module.exports = "uniform float explodeRate;\nvarying vec2 vUv;\n\n\nfloat rand(vec2 co){\n  return fract(sin(dot(co.xy, vec2(12.8273, 67.245))) * 53726.17623);\n}\n\nvoid main() {\n  vec3 col;\n  col.g = rand(vec2(vUv.x, vUv.y + 1.0));\n  col.b = rand(vec2(vUv.x, vUv.y + 2.0));\n  col.r = rand(vec2(vUv.xy));\n  col = col - 0.5;\n  col *= explodeRate;\n\n  gl_FragColor = vec4(col, 1.0);\n}\n"
 
 /***/ }
 /******/ ]);

@@ -7,7 +7,14 @@
 
 	<style type="text/css">
 		html, body {padding: 0; margin: 0; overflow: hidden; cursor: default; height: 100%;}
-		.nav {
+		.info {
+			position: absolute;
+			text-align: center;
+			top: 10%;
+			width: 100%;
+			font-family: monospace;
+		}
+    .nav {
 			position: absolute;
 			bottom: 5%;
 			font-family: monospace;
@@ -33,12 +40,15 @@
 
 	<div id="canvasContainer"></div>
 
-	<div class="nav">
+
+	<div class="info">Move mouse to change target position</div>
+
+  <div class="nav">
 		<ul>
-			<li class="active"><a href="index.html">Example 1</a></li>
+			<li><a href="index.html">Example 1</a></li>
 			<li><a href="example-2.html">Example 2</a></li>
 			<li><a href="example-3.html">Example 3</a></li>
-			<li><a href="example-4.html">Example 4</a></li>
+			<li class="active"><a href="example-4.html">Example 4</a></li>
 		</ul>
 	</div>
 
@@ -49,6 +59,6 @@
 
 	<script src="js/particles.js"></script>
 	<script src="js/main.js"></script>
-	<script src="js/example_1.js"></script>
+	<script src="js/example_4.js"></script>
 </body>
 </html>

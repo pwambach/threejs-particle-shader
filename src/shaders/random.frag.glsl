@@ -1,3 +1,4 @@
+uniform float explodeRate;
 varying vec2 vUv;
 
 
@@ -11,6 +12,7 @@ void main() {
   col.b = rand(vec2(vUv.x, vUv.y + 2.0));
   col.r = rand(vec2(vUv.xy));
   col = col - 0.5;
+  col *= explodeRate;
 
   gl_FragColor = vec4(col, 1.0);
 }
