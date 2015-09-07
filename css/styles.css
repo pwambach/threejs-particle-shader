@@ -1,0 +1,31 @@
+html, body {padding: 0; margin: 0; overflow: hidden; cursor: default; height: 100%;}
+.info {
+  position: absolute;
+  text-align: center;
+  top: 10%;
+  width: 100%;
+  font-family: monospace;
+}
+.nav {
+  position: absolute;
+  bottom: 1%;
+  font-family: monospace;
+}
+.nav.right {
+  text-align: right;
+  width: 100%;
+}
+.nav ul {
+  list-style: none;
+}
+.nav li {
+  display: inline-block;
+  margin-right: 20px;
+}
+.nav a {
+  text-decoration: none;
+  color: black;
+}
+.nav li.active a {
+  color: #999999;
+}
