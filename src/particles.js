@@ -38,8 +38,6 @@
       randomFragment: require('raw!./shaders/random.frag.glsl')
     };
 
-
-
     if(options.velocityFunctionString){
       shaderTextContents.velocityFragment = replaceBehaviour(shaderTextContents.velocityFragment, options.velocityFunctionString);
     }
@@ -83,6 +81,7 @@
     renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
     renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
+
     return {
       update: function(){
         update(renderer, scenes, processCamera, renderTargets, uniforms);
@@ -91,18 +90,12 @@
     };
   };
 
-  window.Particles = Particles;
-
-
-
-
   var replaceBehaviour = function(shader, snippet){
     var regex = /\/\*replace\*\/[^]*\/\*replace\*\//g;
     var newShader = shader.replace(regex, snippet);
+    console.log(newShader);
     return newShader;
   };
-
-
 
   var createRenderTargets = function(size, options){
     return {
@@ -214,5 +207,7 @@
     buffer = newBuffer;
   };
 
+
+  window.Particles = Particles;
 
 })(window);

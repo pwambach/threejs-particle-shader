@@ -84,8 +84,6 @@
 	      randomFragment: __webpack_require__(8)
 	    };
 
-
-
 	    if(options.velocityFunctionString){
 	      shaderTextContents.velocityFragment = replaceBehaviour(shaderTextContents.velocityFragment, options.velocityFunctionString);
 	    }
@@ -129,6 +127,7 @@
 	    renderer.render(scenes.random, processCamera, renderTargets.velocity[0]);
 	    renderer.render(scenes.random, processCamera, renderTargets.position[0]);
 
+
 	    return {
 	      update: function(){
 	        update(renderer, scenes, processCamera, renderTargets, uniforms);
@@ -137,18 +136,12 @@
 	    };
 	  };
 
-	  window.Particles = Particles;
-
-
-
-
 	  var replaceBehaviour = function(shader, snippet){
 	    var regex = /\/\*replace\*\/[^]*\/\*replace\*\//g;
 	    var newShader = shader.replace(regex, snippet);
+	    console.log(newShader);
 	    return newShader;
 	  };
-
-
 
 	  var createRenderTargets = function(size, options){
 	    return {
@@ -261,6 +254,8 @@
 	  };
 
 
+	  window.Particles = Particles;
+
 	})(window);
 
 
@@ -274,7 +269,7 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform sampler2D targetTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\nuniform int useTargetTexture;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 targetPos = targetPosition;\n  vec3 outVelocity;\n  if(useTargetTexture == 1) {\n    targetPos = texture2D(targetTex, vUv).rgb;\n  }\n\n  float distance = distance(targetPos, inPosition);\n  vec3 direction = normalize(targetPos - inPosition);\n\n  /*replace*/\n  distance = max(distance, 1.0);\n  outVelocity = inVelocity + ((direction / distance) * gravityFactor);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
+	module.exports = "varying vec2 vUv;\nuniform sampler2D velTex;\nuniform sampler2D posTex;\nuniform sampler2D targetTex;\nuniform vec3 targetPosition;\nuniform float gravityFactor;\nuniform int useTargetTexture;\n\nvoid main() {\n  vec3 inVelocity = texture2D(velTex, vUv).rgb;\n  vec3 inPosition = texture2D(posTex, vUv).rgb;\n  vec3 targetPos = targetPosition;\n  vec3 outVelocity;\n  if(useTargetTexture == 1) {\n    targetPos = texture2D(targetTex, vUv).rgb;\n  }\n\n  float dist = distance(targetPos, inPosition);\n  vec3 direction = normalize(targetPos - inPosition);\n\n  /*replace*/\n  distance = max(distance, 1.0);\n  outVelocity = inVelocity + ((direction / dist) * gravityFactor);\n  /*replace*/\n\n  gl_FragColor = vec4( outVelocity, 1.0 );\n}\n"
 
 /***/ },
 /* 3 */

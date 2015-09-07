@@ -15,12 +15,12 @@ void main() {
     targetPos = texture2D(targetTex, vUv).rgb;
   }
 
-  float distance = distance(targetPos, inPosition);
+  float dist = distance(targetPos, inPosition);
   vec3 direction = normalize(targetPos - inPosition);
 
   /*replace*/
   distance = max(distance, 1.0);
-  outVelocity = inVelocity + ((direction / distance) * gravityFactor);
+  outVelocity = inVelocity + ((direction / dist) * gravityFactor);
   /*replace*/
 
   gl_FragColor = vec4( outVelocity, 1.0 );
