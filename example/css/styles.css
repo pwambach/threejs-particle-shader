@@ -8,7 +8,7 @@ html, body {padding: 0; margin: 0; overflow: hidden; cursor: default; height: 10
 }
 .nav {
   position: absolute;
-  bottom: 1%;
+  bottom: 2%;
   font-family: monospace;
 }
 .nav.right {

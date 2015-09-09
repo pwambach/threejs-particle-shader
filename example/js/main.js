@@ -49,3 +49,30 @@
 
 	// Kick off render loop
 	render();
+
+
+	// Add navigation
+	var menuLeft = [
+		{title: 'Example 1', url: 'index.html'},
+		{title: 'Example 2', url: 'example-2.html'},
+		{title: 'Example 3', url: 'example-3.html'},
+		{title: 'Example 4', url: 'example-4.html'}
+	];
+	var menuRight = [
+		{title: 'About', url: 'https://github.com/pwambach/threejs-particle-shader'},
+		{title: 'View Code', url: 'https://github.com/pwambach/threejs-particle-shader/tree/master/example'},
+	];
+	function addMenuEntries(definition, element, classNames){
+		var nav = $('<div><ul></ul></div>)');
+		nav.addClass(classNames);
+		$.each(definition, function(index, entry){
+			var elm = $('<li><a href="' + entry.url + '">'+ entry.title +'</a></li>');
+			if(window.location.pathname.indexOf(entry.url) > -1){
+				elm.addClass('active');
+			}
+			nav.find('ul').append(elm);
+		});
+		element.append(nav);
+	}
+	addMenuEntries(menuRight, $('body'), 'nav right');
+	addMenuEntries(menuLeft, $('body'), 'nav left');
