@@ -22,6 +22,6 @@
   "dependencies": {
     "jquery": "^2.1.4",
     "stats.js": "^1.0.0",
-    "three": "^0.71.0"
+    "three": "^0.73.0"
   }
 }
