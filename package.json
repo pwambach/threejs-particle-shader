@@ -10,7 +10,8 @@
     "gulp": "~3.9.0",
     "gulp-gh-pages": "~0.4.0",
     "gulp-watch": "^4.3.5",
-    "raw-loader": "^0.5.1"
+    "raw-loader": "^0.5.1",
+    "webpack": "1.12.2"
   },
   "keywords": [
     "particles",
