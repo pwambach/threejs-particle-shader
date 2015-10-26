@@ -117,7 +117,7 @@
       generateMipmaps: false,
       magFilter: THREE.NearestFilter,
       minFilter: THREE.NearestFilter,
-      type: THREE.FloatType
+      type: THREE.HalfFloatType
     };
     return new THREE.WebGLRenderTarget(size, size, options);
   };
