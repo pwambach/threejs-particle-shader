@@ -115,7 +115,7 @@
 	    scenes.velocity.add(createMesh(textureSize, shaderMaterials.velocity));
 	    scenes.position.add(createMesh(textureSize, shaderMaterials.position));
 	    scenes.random.add(createMesh(textureSize, shaderMaterials.random));
-	    this.pointCloud = createPointCloud(textureSize, shaderMaterials.display);
+	    this.pointCloud = createPoints(textureSize, shaderMaterials.display);
 	    scenes.display.add(this.pointCloud);
 
 	    //debug
@@ -163,7 +163,7 @@
 	      generateMipmaps: false,
 	      magFilter: THREE.NearestFilter,
 	      minFilter: THREE.NearestFilter,
-	      type: THREE.FloatType
+	      type: THREE.HalfFloatType
 	    };
 	    return new THREE.WebGLRenderTarget(size, size, options);
 	  };
@@ -236,13 +236,13 @@
 	    );
 	  };
 
-	  var createPointCloud = function(size, material) {
+	  var createPoints = function(size, material) {
 	    var points = new THREE.Geometry();
 	    for (var i = 0; i < size * size; i++) {
 	      var pos = new THREE.Vector3((i % size)/size, Math.floor(i/size)/size , 0);
 	      points.vertices.push(pos);
 	    }
-	    return new THREE.PointCloud(points, material);
+	    return new THREE.Points(points, material);
 	  };
 
 	  var update = function(renderer, scenes, processCamera, renderTargets, uniforms){
