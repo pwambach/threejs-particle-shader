@@ -219,8 +219,9 @@
     if( typeof module !== 'undefined' && module.exports ) {
       exports = module.exports = Particles;
     }
-    exports.mymodule = Particles;
-  } else {
+    exports.Particles = Particles;
+  }
+  if(window) {
     window.Particles = Particles;
   }
 
