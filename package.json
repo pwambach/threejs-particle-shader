@@ -1,10 +1,11 @@
 {
   "name": "threejs-particle-shader",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/pwambach/threejs-particle-shader"
   },
+  "main": "dist/particles.js",
   "author": "Philipp Wambach",
   "devDependencies": {
     "gulp": "~3.9.0",
