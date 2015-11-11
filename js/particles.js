@@ -261,7 +261,15 @@
 	  };
 
 
-	  window.Particles = Particles;
+	  if( true ) {
+	    if( typeof module !== 'undefined' && module.exports ) {
+	      exports = module.exports = Particles;
+	    }
+	    exports.Particles = Particles;
+	  }
+	  if(window) {
+	    window.Particles = Particles;
+	  }
 
 	})(window);
 
