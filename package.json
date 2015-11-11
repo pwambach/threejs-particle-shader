@@ -5,6 +5,7 @@
     "type": "git",
     "url": "https://github.com/pwambach/threejs-particle-shader"
   },
+  "main": "dist/particles.js",
   "author": "Philipp Wambach",
   "devDependencies": {
     "gulp": "~3.9.0",
