@@ -215,6 +215,13 @@
   };
 
 
-  window.Particles = Particles;
+  if( typeof exports !== 'undefined' ) {
+    if( typeof module !== 'undefined' && module.exports ) {
+      exports = module.exports = Particles;
+    }
+    exports.mymodule = Particles;
+  } else {
+    window.Particles = Particles;
+  }
 
 })(window);
