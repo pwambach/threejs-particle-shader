@@ -23,8 +23,7 @@ gulp.task("copy", function(){
     .pipe(gulp.dest('example/js'))
   gulp.src([
       "node_modules/three/three.min.js",
-      "node_modules/jquery/dist/jquery.min.js",
-      "node_modules/stats.js/build/stats.min.js"
+      "node_modules/jquery/dist/jquery.min.js"
     ])
     .pipe(gulp.dest('example/js/vendor'));
 });
