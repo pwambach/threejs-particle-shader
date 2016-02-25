@@ -1,15 +1,14 @@
-camera.position.set( -6, 2, 10 );
+camera.position.set(0.5, 0.5, 4 );
 camera.lookAt( new THREE.Vector3(0,0,0) );
 
 // Create the particles
 var position = new THREE.Vector3(1,1,0);
 var particleOptions = {
-  textureSize: 128,
+  textureSize: 256,
   gravityFactor: 0.05,
   explodeRate: 0.01,
-  pointSize: 1.2,
-  targetPosition: position,
-  colorFunctionString: 'color = vec4(0.0, 1.0-dist, 1.0-dist, 1.0);'
+  pointSize: 1.0,
+  targetPosition: position
 };
 var particles = new Particles(renderer, scene, particleOptions);
 

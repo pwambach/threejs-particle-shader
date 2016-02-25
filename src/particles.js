@@ -35,7 +35,9 @@
       displayVertex: require('raw!./shaders/display.vert.glsl'),
       displayFragment: require('raw!./shaders/display.frag.glsl'),
       randomVertex: require('raw!./shaders/random.vert.glsl'),
-      randomFragment: require('raw!./shaders/random.frag.glsl')
+      randomFragment: require('raw!./shaders/random.frag.glsl'),
+      noiseVertex: require('raw!./shaders/random.vert.glsl'),
+      noiseFragment: require('raw!./shaders/noise.frag.glsl')
     };
 
     if(options.velocityFunctionString){
@@ -73,8 +75,13 @@
     scenes.display.add(this.pointCloud);
 
     //debug
-    //scenes.display.add(createMesh(textureSize, shaderMaterials.velocity));
-    //scenes.display.add(createMesh(textureSize, shaderMaterials.position));
+    // scenes.display.add(createMesh(1, shaderMaterials.velocity));
+    // scenes.display.add(createMesh(1, shaderMaterials.position));
+    var mesh = createMesh(1, shaderMaterials.noise);
+    mesh.position.z = -0.5;
+    mesh.position.x = 0.5;
+    mesh.position.y = 0.5;
+    // scenes.display.add(mesh);
 
     var processCamera = new THREE.OrthographicCamera(-textureSize/2, textureSize/2, textureSize/2, -textureSize/2, -1, 0);
 
@@ -125,11 +132,7 @@
   var createVelocityUniforms = function(renderTargets, targetPosition, targetTexture, gravityFactor){
     return {
       velTex: {type: "t", value: renderTargets.velocity[0]},
-      posTex: {type: "t", value: renderTargets.position[0]},
-      targetTex: {type: "t", value: targetTexture},
-      targetPosition: {type: "v3", value: targetPosition},
-      useTargetTexture: {type: "i", value: !!targetTexture ? 1 : 0},
-      gravityFactor: {type: "f", value: gravityFactor}
+      posTex: {type: "t", value: renderTargets.position[0]}
     };
   };
 
@@ -144,7 +147,6 @@
     return {
       pointSize: {type: "f", value: pointSize},
       posTex: {type: "t", value: renderTargets.position[0]},
-      targetPosition: {type: "v3", value: targetPosition},
       alpha: {type: "f", value: 0.5}
     };
   };
@@ -168,7 +170,8 @@
       velocity: createShaderMaterial(shaders.velocityVertex, shaders.velocityFragment, uniforms.velocity),
       position: createShaderMaterial(shaders.positionVertex, shaders.positionFragment, uniforms.position),
       display: createShaderMaterial(shaders.displayVertex, shaders.displayFragment, uniforms.display, displayMaterialOptions),
-      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, uniforms.random)
+      random: createShaderMaterial(shaders.randomVertex, shaders.randomFragment, uniforms.random),
+      noise: createShaderMaterial(shaders.noiseVertex, shaders.noiseFragment, {})
     };
   };
 

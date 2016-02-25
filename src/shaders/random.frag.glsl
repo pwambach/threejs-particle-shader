@@ -8,11 +8,11 @@ float rand(vec2 co){
 
 void main() {
   vec3 col;
-  col.g = rand(vec2(vUv.x, vUv.y + 1.0));
-  col.b = rand(vec2(vUv.x, vUv.y + 2.0));
   col.r = rand(vec2(vUv.xy));
-  col = col - 0.5;
-  col *= explodeRate;
+  col.g = rand(vec2(vUv.x, vUv.y + 1.0));
+  col.b = 0.0; //rand(vec2(vUv.x, vUv.y + 2.0));
+  col = col;
+  col *= explodeRate * 100.0;
 
   gl_FragColor = vec4(col, 1.0);
 }

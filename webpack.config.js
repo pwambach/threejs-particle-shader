@@ -2,7 +2,7 @@ module.exports = {
   context: __dirname,
 	entry: "./src/particles.js",
 	output: {
-		path: "./dist",
+		path: "./example/js",
 		filename: "particles.js"
 	}
 }

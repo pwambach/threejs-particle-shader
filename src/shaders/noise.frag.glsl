@@ -1,6 +1,4 @@
 varying vec2 vUv;
-uniform sampler2D velTex;
-uniform sampler2D posTex;
 
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -110,12 +108,7 @@ vec2 computeCurl(float x, float y) {
 }
 
 void main() {
-  vec3 inVelocity = texture2D(velTex, vUv).rgb;
-  vec3 inPosition = texture2D(posTex, vUv).rgb;
-
-  vec2 a = computeCurl(inPosition.x*4.0, inPosition.y*4.0);
-  vec3 velocity = vec3(a, 0.0);
-  velocity *= 0.0005;
-
-  gl_FragColor = vec4( velocity, 1.0 );
+  vec2 curl = computeCurl(vUv.x*4.0, vUv.y*4.0);
+  vec3 color = vec3(curl.x, 0.0, curl.y);
+  gl_FragColor = vec4( color, 1.0 );
 }
