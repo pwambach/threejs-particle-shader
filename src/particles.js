@@ -1,6 +1,7 @@
 
 (function(window){
 
+  var frame = 0;
   var buffer = 0;
 
   //Utils
@@ -132,7 +133,8 @@
   var createVelocityUniforms = function(renderTargets, targetPosition, targetTexture, gravityFactor){
     return {
       velTex: {type: "t", value: renderTargets.velocity[0]},
-      posTex: {type: "t", value: renderTargets.position[0]}
+      posTex: {type: "t", value: renderTargets.position[0]},
+      frame: {type: "f", value: frame}
     };
   };
 
@@ -205,6 +207,7 @@
   var update = function(renderer, scenes, processCamera, renderTargets, uniforms){
     var newBuffer = (buffer+1)%2;
     uniforms.velocity.velTex.value = renderTargets.velocity[buffer];
+    uniforms.velocity.frame.value = frame;
     uniforms.position.posTex.value = renderTargets.position[buffer];
     renderer.render(scenes.velocity, processCamera, renderTargets.velocity[newBuffer]);
 
@@ -215,6 +218,7 @@
     uniforms.display.posTex.value = renderTargets.position[newBuffer];
 
     buffer = newBuffer;
+    frame++;
   };
 
 

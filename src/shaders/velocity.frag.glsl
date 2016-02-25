@@ -1,6 +1,7 @@
 varying vec2 vUv;
 uniform sampler2D velTex;
 uniform sampler2D posTex;
+uniform float frame;
 
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -94,15 +95,15 @@ float snoise(vec3 v)
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
-vec2 computeCurl(float x, float y) {
+vec2 computeCurl(float x, float y, float f) {
   float  eps  =  0.01;
   float  n1,  n2,  a,  b;
 
-  n1  =  snoise(vec3(x,  y  +  eps, 0.0));
-  n2  =  snoise(vec3(x,  y  -  eps, 0.0));
+  n1  =  snoise(vec3(x,  y  +  eps, f));
+  n2  =  snoise(vec3(x,  y  -  eps, f));
   a  =  (n1  -  n2)/(2.0  *  eps);
-  n1  =  snoise(vec3(x  +  eps,  y, 0.0));
-  n2  =  snoise(vec3(x  -  eps,  y, 0.0));
+  n1  =  snoise(vec3(x  +  eps,  y, f));
+  n2  =  snoise(vec3(x  -  eps,  y, f));
   b  =  (n1  -  n2)/(2.0  *  eps);
 
   vec2 curl  =  vec2(a, -b);
@@ -112,10 +113,12 @@ vec2 computeCurl(float x, float y) {
 void main() {
   vec3 inVelocity = texture2D(velTex, vUv).rgb;
   vec3 inPosition = texture2D(posTex, vUv).rgb;
+  float f = frame * 0.01;
 
-  vec2 a = computeCurl(inPosition.x*4.0, inPosition.y*4.0);
+  vec2 a = computeCurl(inPosition.x*2.0, inPosition.y*2.0, f);
   vec3 velocity = vec3(a, 0.0);
   velocity *= 0.0005;
+  velocity.y += 0.002;
 
   gl_FragColor = vec4( velocity, 1.0 );
 }

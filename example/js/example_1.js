@@ -1,5 +1,5 @@
-camera.position.set(0.5, 0.5, 4 );
-camera.lookAt( new THREE.Vector3(0,0,0) );
+camera.position.set(0.5, 0.5, 2 );
+camera.lookAt( new THREE.Vector3(0.5,0.5,0) );
 
 // Create the particles
 var position = new THREE.Vector3(1,1,0);
